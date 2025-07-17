@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nmap Web Scanner</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Nmap Network Scanner</h2>
+        <form id="scanForm">
+            <input type="text" id="ip_range" name="ip_range" placeholder="Enter IP Range (e.g., 192.168.1.0/24)" required>
+            <button type="submit">Scan</button>
+        </form>
+        <pre id="output"></pre>
+    </div>
+    <script>
+        document.getElementById('scanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ipRange = document.getElementById('ip_range').value;
+            fetch('/scan', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'ip_range=' + encodeURIComponent(ipRange)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.output) {
+                    document.getElementById('output').textContent = data.output;
+                } else {
+                    document.getElementById('output').textContent = 'Error: ' + data.error;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
